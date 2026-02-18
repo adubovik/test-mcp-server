@@ -70,6 +70,7 @@ mcp = FastMCP(
 )
 
 if os.getenv("MCP_INSPECTOR","").lower() in ("1", "true"):
+    print("Installing CORS middleware...", flush=True)
     middleware = [
         Middleware(
             CORSMiddleware,
@@ -145,10 +146,12 @@ def convert_time(
 
 
 def main() -> None:
+    port = int(os.getenv("PORT", "5000"))
+
     mcp.run(
         transport="streamable-http",
-        host="127.0.0.1",
-        port=5006,
+        host="0.0.0.0",
+        port=port,
         show_banner=False,
         middleware=middleware,
     )
