@@ -12,6 +12,7 @@ from fastmcp import FastMCP
 
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
+from starlette.responses import JSONResponse
 
 
 class TimeTools(str, Enum):
@@ -69,7 +70,7 @@ mcp = FastMCP(
     ),
 )
 
-if os.getenv("MCP_INSPECTOR","").lower() in ("1", "true"):
+if os.getenv("MCP_INSPECTOR", "").lower() in ("1", "true"):
     print("Installing CORS middleware...", flush=True)
     middleware = [
         Middleware(
@@ -87,6 +88,7 @@ if os.getenv("MCP_INSPECTOR","").lower() in ("1", "true"):
     ]
 else:
     middleware = []
+
 
 @mcp.tool(
     name=TimeTools.GET_CURRENT_TIME.value,
@@ -143,6 +145,11 @@ def convert_time(
         target=to_time_result(target_timezone, dst_dt),
         time_difference=diff_str,
     )
+
+
+@mcp.custom_route("/health", methods=["GET"])
+async def health_check(request):
+    return JSONResponse({"status": "healthy", "service": "mcp-server"})
 
 
 def main() -> None:
