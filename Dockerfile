@@ -1,10 +1,10 @@
-FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS uv
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
 
 WORKDIR /app
 
 COPY . .
 
-RUN uv venv .venv
+RUN uv venv .venv --no-managed-python
 RUN uv sync
 
 EXPOSE 5000
